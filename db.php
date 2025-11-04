@@ -1,0 +1,24 @@
+<?php
+
+function getPDO(): PDO
+{
+    static $pdo = null;
+
+    if ($pdo === null) {
+        $config = require __DIR__ . '/config.php';
+
+        $dsn = sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $config['db_host'], $config['db_name']);
+
+        try {
+            $pdo = new PDO($dsn, $config['db_user'], $config['db_pass'], [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
+        } catch (PDOException $e) {
+            die('Database connection failed: ' . htmlspecialchars($e->getMessage()));
+        }
+    }
+
+    return $pdo;
+}
+
